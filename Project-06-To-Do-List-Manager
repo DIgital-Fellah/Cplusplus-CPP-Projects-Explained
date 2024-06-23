@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm> // for std::sort
+
+// Function to display the menu
+void displayMenu() {
+    std::cout << "To-Do List Manager\n";
+    std::cout << "1. Add Task\n";
+    std::cout << "2. Remove Task\n";
+    std::cout << "3. Display Tasks\n";
+    std::cout << "4. Sort Tasks\n";
+    std::cout << "5. Exit\n";
+    std::cout << "Enter your choice: ";
+}
+
+// Function to add a task to the to-do list
+void addTask(std::list<std::string>& tasks) {
+    std::cout << "Enter the task: ";
+    std::string task;
+    std::cin.ignore(); // Ignore any leftover newline character in the input buffer
+    std::getline(std::cin, task); // Get the entire line as the task
+    tasks.push_back(task); // Add the task to the list
+    std::cout << "Task added successfully!\n";
+}
+
+// Function to remove a task from the to-do list
+void removeTask(std::list<std::string>& tasks) {
+    std::cout << "Enter the task to remove: ";
+    std::string task;
+    std::cin.ignore(); // Ignore any leftover newline character in the input buffer
+    std::getline(std::cin, task); // Get the entire line as the task
+    auto it = std::find(tasks.begin(), tasks.end(), task); // Find the task in the list
+    if (it != tasks.end()) {
+        tasks.erase(it); // Remove the task if found
+        std::cout << "Task removed successfully!\n";
+    } else {
+        std::cout << "Task not found!\n";
+    }
+}
+
+// Function to display all tasks in the to-do list
+void displayTasks(const std::list<std::string>& tasks) {
+    std::cout << "To-Do List:\n";
+    for (const auto& task : tasks) {
+        std::cout << "- " << task << "\n"; // Display each task
+    }
+}
+
+// Function to sort tasks in the to-do list
+void sortTasks(std::list<std::string>& tasks) {
+    tasks.sort(); // Sort the tasks in alphabetical order
+    std::cout << "Tasks sorted successfully!\n";
+}
+
+int main() {
+    std::list<std::string> tasks; // List to store tasks
+    int choice;
+
+    while (true) {
+        displayMenu(); // Display the menu
+        std::cin >> choice; // Get the user's choice
+
+        switch (choice) {
+            case 1:
+                addTask(tasks); // Add a task
+                break;
+            case 2:
+                removeTask(tasks); // Remove a task
+                break;
+            case 3:
+                displayTasks(tasks); // Display all tasks
+                break;
+            case 4:
+                sortTasks(tasks); // Sort the tasks
+                break;
+            case 5:
+                std::cout << "Exiting...\n";
+                return 0; // Exit the program
+            default:
+                std::cout << "Invalid choice! Please try again.\n";
+        }
+    }
+
+    return 0; // This line will never be reached
+}
