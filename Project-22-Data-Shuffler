@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <chrono>
+
+// Function to print the contents of a vector
+template<typename T>
+void printVector(const std::vector<T>& vec) {
+    for (const auto& element : vec) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Create a vector of integers from 1 to 10
+    std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // Print the original vector
+    std::cout << "Original vector: ";
+    printVector(numbers);
+
+    // Get the current time as a seed for the random number generator
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+    // Create a random number generator
+    std::default_random_engine generator(seed);
+
+    // Use random_shuffle to randomize the order of elements in the vector
+    std::random_shuffle(numbers.begin(), numbers.end(), generator);
+
+    // Print the shuffled vector
+    std::cout << "Shuffled vector: ";
+    printVector(numbers);
+
+    // Create a vector of strings
+    std::vector<std::string> fruits = {"apple", "banana", "cherry", "date", "elderberry"};
+
+    // Print the original vector of strings
+    std::cout << "Original fruit vector: ";
+    printVector(fruits);
+
+    // Shuffle the vector of strings
+    std::random_shuffle(fruits.begin(), fruits.end(), generator);
+
+    // Print the shuffled vector of strings
+    std::cout << "Shuffled fruit vector: ";
+    printVector(fruits);
+
+    return 0;
+}
