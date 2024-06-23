@@ -1,0 +1,149 @@
+#include <iostream>
+#include <map>
+#include <string>
+#include <limits>
+
+// Function to clear the input buffer
+void clearInputBuffer() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+class InventorySystem {
+private:
+    // Map to store items (key: item name, value: quantity)
+    std::map<std::string, int> inventory;
+
+public:
+    // Function to add an item to the inventory
+    void addItem(const std::string& itemName, int quantity) {
+        // If the item already exists, increase its quantity
+        if (inventory.find(itemName) != inventory.end()) {
+            inventory[itemName] += quantity;
+        } else {
+            // If it's a new item, add it to the inventory
+            inventory[itemName] = quantity;
+        }
+        std::cout << "Added " << quantity << " " << itemName << "(s) to the inventory.\n";
+    }
+
+    // Function to remove an item from the inventory
+    void removeItem(const std::string& itemName, int quantity) {
+        // Check if the item exists in the inventory
+        if (inventory.find(itemName) != inventory.end()) {
+            if (inventory[itemName] >= quantity) {
+                // Decrease the quantity
+                inventory[itemName] -= quantity;
+                std::cout << "Removed " << quantity << " " << itemName << "(s) from the inventory.\n";
+                
+                // If the quantity becomes zero, remove the item completely
+                if (inventory[itemName] == 0) {
+                    inventory.erase(itemName);
+                    std::cout << itemName << " has been removed from the inventory.\n";
+                }
+            } else {
+                std::cout << "Error: Not enough " << itemName << " in the inventory.\n";
+            }
+        } else {
+            std::cout << "Error: " << itemName << " not found in the inventory.\n";
+        }
+    }
+
+    // Function to display the current inventory
+    void displayInventory() const {
+        if (inventory.empty()) {
+            std::cout << "The inventory is empty.\n";
+        } else {
+            std::cout << "Current Inventory:\n";
+            for (const auto& item : inventory) {
+                std::cout << item.first << ": " << item.second << "\n";
+            }
+        }
+    }
+
+    // Function to check the quantity of a specific item
+    void checkQuantity(const std::string& itemName) const {
+        auto it = inventory.find(itemName);
+        if (it != inventory.end()) {
+            std::cout << itemName << ": " << it->second << "\n";
+        } else {
+            std::cout << itemName << " not found in the inventory.\n";
+        }
+    }
+};
+
+int main() {
+    InventorySystem inventory;
+    int choice;
+    std::string itemName;
+    int quantity;
+
+    while (true) {
+        // Display menu options
+        std::cout << "\nInventory Management System\n";
+        std::cout << "1. Add item\n";
+        std::cout << "2. Remove item\n";
+        std::cout << "3. Display inventory\n";
+        std::cout << "4. Check item quantity\n";
+        std::cout << "5. Exit\n";
+        std::cout << "Enter your choice: ";
+        
+        // Get user's choice
+        std::cin >> choice;
+
+        // Handle invalid input
+        if (std::cin.fail()) {
+            std::cout << "Invalid input. Please enter a number.\n";
+            clearInputBuffer();
+            continue;
+        }
+
+        // Process user's choice
+        switch (choice) {
+            case 1: // Add item
+                std::cout << "Enter item name: ";
+                std::cin >> itemName;
+                std::cout << "Enter quantity: ";
+                std::cin >> quantity;
+                if (std::cin.fail() || quantity < 0) {
+                    std::cout << "Invalid quantity. Please enter a non-negative number.\n";
+                    clearInputBuffer();
+                } else {
+                    inventory.addItem(itemName, quantity);
+                }
+                break;
+
+            case 2: // Remove item
+                std::cout << "Enter item name: ";
+                std::cin >> itemName;
+                std::cout << "Enter quantity to remove: ";
+                std::cin >> quantity;
+                if (std::cin.fail() || quantity < 0) {
+                    std::cout << "Invalid quantity. Please enter a non-negative number.\n";
+                    clearInputBuffer();
+                } else {
+                    inventory.removeItem(itemName, quantity);
+                }
+                break;
+
+            case 3: // Display inventory
+                inventory.displayInventory();
+                break;
+
+            case 4: // Check item quantity
+                std::cout << "Enter item name: ";
+                std::cin >> itemName;
+                inventory.checkQuantity(itemName);
+                break;
+
+            case 5: // Exit
+                std::cout << "Exiting the program. Goodbye!\n";
+                return 0;
+
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+        }
+    }
+
+    return 0;
+}
