@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+// Function to print a vector of any type
+template<typename T>
+void printVector(const std::vector<T>& vec, const std::string& label) {
+    std::cout << label << ": ";
+    for (const auto& element : vec) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Create a vector with some duplicate elements
+    std::vector<int> numbers = {1, 2, 2, 3, 3, 3, 4, 5, 5, 6, 7, 7, 8, 9, 9};
+
+    // Print the original vector
+    printVector(numbers, "Original vector");
+
+    // Create a new vector to store unique elements
+    std::vector<int> uniqueNumbers;
+
+    // Use std::unique_copy to copy unique elements to the new vector
+    // std::unique_copy removes consecutive duplicate elements
+    // We need to sort the vector first to ensure all duplicates are consecutive
+    std::sort(numbers.begin(), numbers.end());
+    std::unique_copy(numbers.begin(), numbers.end(), std::back_inserter(uniqueNumbers));
+
+    // Print the vector with unique elements
+    printVector(uniqueNumbers, "Vector with unique elements");
+
+    // Demonstrate using unique directly on the original vector
+    // First, sort the original vector (it's already sorted in this case, but let's do it for completeness)
+    std::sort(numbers.begin(), numbers.end());
+
+    // Use std::unique to remove consecutive duplicate elements
+    // unique doesn't change the size of the container, it moves unique elements to the front
+    // and returns an iterator to the new logical end
+    auto newEnd = std::unique(numbers.begin(), numbers.end());
+
+    // Erase the remaining elements (duplicates) from the vector
+    numbers.erase(newEnd, numbers.end());
+
+    // Print the original vector after removing duplicates
+    printVector(numbers, "Original vector after removing duplicates");
+
+    // Demonstrate unique_copy with a custom comparison function
+    std::vector<int> numbersWithCustomComparison = {1, -1, 2, -2, 3, -3, 4, -4, 5, -5};
+    std::vector<int> uniqueAbsoluteValues;
+
+    // Sort the vector based on absolute values
+    std::sort(numbersWithCustomComparison.begin(), numbersWithCustomComparison.end(),
+              [](int a, int b) { return std::abs(a) < std::abs(b); });
+
+    // Use unique_copy with a custom comparison function to remove duplicates based on absolute value
+    std::unique_copy(numbersWithCustomComparison.begin(), numbersWithCustomComparison.end(),
+                     std::back_inserter(uniqueAbsoluteValues),
+                     [](int a, int b) { return std::abs(a) == std::abs(b); });
+
+    // Print the vector with unique absolute values
+    printVector(uniqueAbsoluteValues, "Vector with unique absolute values");
+
+    return 0;
+}
