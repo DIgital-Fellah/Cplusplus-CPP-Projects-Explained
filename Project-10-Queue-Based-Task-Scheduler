@@ -1,0 +1,70 @@
+#include <iostream>
+#include <queue>
+#include <string>
+#include <chrono>
+#include <thread>
+
+// Define a Task structure to hold task information
+struct Task {
+    std::string name;
+    int priority;
+    int duration; // in seconds
+
+    // Constructor for easy task creation
+    Task(std::string n, int p, int d) : name(n), priority(p), duration(d) {}
+
+    // Overload the < operator to compare tasks based on priority
+    bool operator<(const Task& other) const {
+        return priority < other.priority;
+    }
+};
+
+class TaskScheduler {
+private:
+    // Use a priority_queue to automatically sort tasks by priority
+    std::priority_queue<Task> taskQueue;
+
+public:
+    // Add a new task to the queue
+    void addTask(const std::string& name, int priority, int duration) {
+        taskQueue.push(Task(name, priority, duration));
+        std::cout << "Task added: " << name << std::endl;
+    }
+
+    // Execute all tasks in the queue
+    void executeTasks() {
+        std::cout << "Executing tasks..." << std::endl;
+        
+        // Continue while there are tasks in the queue
+        while (!taskQueue.empty()) {
+            // Get the highest priority task
+            Task currentTask = taskQueue.top();
+            taskQueue.pop();
+
+            std::cout << "Executing task: " << currentTask.name 
+                      << " (Priority: " << currentTask.priority << ")" << std::endl;
+
+            // Simulate task execution by sleeping for the task duration
+            std::this_thread::sleep_for(std::chrono::seconds(currentTask.duration));
+
+            std::cout << "Task completed: " << currentTask.name << std::endl;
+        }
+
+        std::cout << "All tasks completed." << std::endl;
+    }
+};
+
+int main() {
+    TaskScheduler scheduler;
+
+    // Add some tasks to the scheduler
+    scheduler.addTask("Send email", 2, 3);
+    scheduler.addTask("Update database", 1, 5);
+    scheduler.addTask("Generate report", 3, 4);
+    scheduler.addTask("Backup files", 2, 2);
+
+    // Execute all tasks
+    scheduler.executeTasks();
+
+    return 0;
+}
