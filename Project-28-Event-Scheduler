@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <iomanip>
+
+// Define a struct to represent an event
+struct Event {
+    std::string name;
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+
+    // Constructor to initialize an event
+    Event(std::string n, int y, int m, int d, int h, int min)
+        : name(n), year(y), month(m), day(d), hour(h), minute(min) {}
+};
+
+// Function to print an event
+void printEvent(const Event& e) {
+    std::cout << std::setfill('0');
+    std::cout << e.name << " - "
+              << e.year << "/"
+              << std::setw(2) << e.month << "/"
+              << std::setw(2) << e.day << " "
+              << std::setw(2) << e.hour << ":"
+              << std::setw(2) << e.minute << std::endl;
+}
+
+// Custom comparison function for sorting events
+bool compareEvents(const Event& e1, const Event& e2) {
+    // Compare years
+    if (e1.year != e2.year) return e1.year < e2.year;
+    // If years are the same, compare months
+    if (e1.month != e2.month) return e1.month < e2.month;
+    // If months are the same, compare days
+    if (e1.day != e2.day) return e1.day < e2.day;
+    // If days are the same, compare hours
+    if (e1.hour != e2.hour) return e1.hour < e2.hour;
+    // If hours are the same, compare minutes
+    return e1.minute < e2.minute;
+}
+
+int main() {
+    // Create a vector to store events
+    std::vector<Event> events;
+
+    // Add some sample events
+    events.push_back(Event("Meeting", 2024, 7, 15, 10, 0));
+    events.push_back(Event("Birthday Party", 2024, 6, 20, 18, 30));
+    events.push_back(Event("Conference", 2024, 9, 5, 9, 0));
+    events.push_back(Event("Dinner", 2024, 6, 20, 20, 0));
+    events.push_back(Event("Workshop", 2024, 7, 15, 14, 30));
+
+    // Print unsorted events
+    std::cout << "Unsorted events:" << std::endl;
+    for (const auto& event : events) {
+        printEvent(event);
+    }
+
+    // Sort the events using the custom comparison function
+    std::sort(events.begin(), events.end(), compareEvents);
+
+    // Print sorted events
+    std::cout << "\nSorted events:" << std::endl;
+    for (const auto& event : events) {
+        printEvent(event);
+    }
+
+    return 0;
+}
