@@ -1,0 +1,130 @@
+#include <iostream>
+#include <set>
+#include <string>
+#include <iomanip>
+
+// Define a struct to represent an event
+struct Event {
+    std::string date;  // Date of the event (format: YYYY-MM-DD)
+    std::string name;  // Name of the event
+
+    // Custom comparison operator for sorting events by date
+    bool operator<(const Event& other) const {
+        return date < other.date;
+    }
+};
+
+// Class to manage the event calendar
+class EventCalendar {
+private:
+    // Use a set to store events, which will automatically sort them by date
+    std::set<Event> events;
+
+public:
+    // Function to add a new event to the calendar
+    void addEvent(const std::string& date, const std::string& name) {
+        events.insert({date, name});
+        std::cout << "Event added successfully.\n";
+    }
+
+    // Function to remove an event from the calendar
+    void removeEvent(const std::string& date, const std::string& name) {
+        auto it = events.find({date, name});
+        if (it != events.end()) {
+            events.erase(it);
+            std::cout << "Event removed successfully.\n";
+        } else {
+            std::cout << "Event not found.\n";
+        }
+    }
+
+    // Function to display all events
+    void displayEvents() const {
+        if (events.empty()) {
+            std::cout << "No events in the calendar.\n";
+        } else {
+            std::cout << "Events:\n";
+            for (const auto& event : events) {
+                std::cout << event.date << " - " << event.name << "\n";
+            }
+        }
+    }
+
+    // Function to search for events on a specific date
+    void searchByDate(const std::string& date) const {
+        bool found = false;
+        for (const auto& event : events) {
+            if (event.date == date) {
+                if (!found) {
+                    std::cout << "Events on " << date << ":\n";
+                    found = true;
+                }
+                std::cout << "- " << event.name << "\n";
+            }
+        }
+        if (!found) {
+            std::cout << "No events found on " << date << ".\n";
+        }
+    }
+};
+
+// Main function to run the event calendar application
+int main() {
+    EventCalendar calendar;
+    int choice;
+    std::string date, name;
+
+    // Main loop for the application
+    while (true) {
+        // Display menu options
+        std::cout << "\nEvent Calendar Menu:\n";
+        std::cout << "1. Add Event\n";
+        std::cout << "2. Remove Event\n";
+        std::cout << "3. Display All Events\n";
+        std::cout << "4. Search Events by Date\n";
+        std::cout << "5. Exit\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        // Process user's choice
+        switch (choice) {
+            case 1:
+                // Add a new event
+                std::cout << "Enter date (YYYY-MM-DD): ";
+                std::cin >> date;
+                std::cout << "Enter event name: ";
+                std::cin.ignore();  // Clear the newline character from the buffer
+                std::getline(std::cin, name);
+                calendar.addEvent(date, name);
+                break;
+            case 2:
+                // Remove an event
+                std::cout << "Enter date (YYYY-MM-DD): ";
+                std::cin >> date;
+                std::cout << "Enter event name: ";
+                std::cin.ignore();  // Clear the newline character from the buffer
+                std::getline(std::cin, name);
+                calendar.removeEvent(date, name);
+                break;
+            case 3:
+                // Display all events
+                calendar.displayEvents();
+                break;
+            case 4:
+                // Search for events by date
+                std::cout << "Enter date to search (YYYY-MM-DD): ";
+                std::cin >> date;
+                calendar.searchByDate(date);
+                break;
+            case 5:
+                // Exit the program
+                std::cout << "Goodbye!\n";
+                return 0;
+            default:
+                // Handle invalid input
+                std::cout << "Invalid choice. Please try again.\n";
+        }
+    }
+
+    return 0;
+}
