@@ -1,0 +1,101 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <map>
+
+// Function to calculate the mean of a vector of numbers
+double calculateMean(const std::vector<double>& numbers) {
+    // Use std::accumulate to sum all numbers, then divide by the count
+    return std::accumulate(numbers.begin(), numbers.end(), 0.0) / numbers.size();
+}
+
+// Function to calculate the median of a vector of numbers
+double calculateMedian(std::vector<double> numbers) {
+    // Sort the vector in ascending order
+    std::sort(numbers.begin(), numbers.end());
+    
+    size_t size = numbers.size();
+    if (size % 2 == 0) {
+        // If even number of elements, average the two middle numbers
+        return (numbers[size/2 - 1] + numbers[size/2]) / 2;
+    } else {
+        // If odd number of elements, return the middle number
+        return numbers[size/2];
+    }
+}
+
+// Function to calculate the mode of a vector of numbers
+std::vector<double> calculateMode(const std::vector<double>& numbers) {
+    std::map<double, int> frequencyMap;
+    std::vector<double> modes;
+    int maxFrequency = 0;
+
+    // Count the frequency of each number
+    for (const auto& num : numbers) {
+        frequencyMap[num]++;
+        maxFrequency = std::max(maxFrequency, frequencyMap[num]);
+    }
+
+    // Find all numbers with the maximum frequency
+    for (const auto& pair : frequencyMap) {
+        if (pair.second == maxFrequency) {
+            modes.push_back(pair.first);
+        }
+    }
+
+    return modes;
+}
+
+int main() {
+    std::vector<double> numbers;
+    double num;
+
+    // Input numbers from the user
+    std::cout << "Enter numbers (enter a non-number to finish):\n";
+    while (std::cin >> num) {
+        numbers.push_back(num);
+    }
+
+    // Clear the input stream in case of invalid input
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    // Calculate and display the mean
+    double mean = calculateMean(numbers);
+    std::cout << "Mean: " << mean << std::endl;
+
+    // Calculate and display the median
+    double median = calculateMedian(numbers);
+    std::cout << "Median: " << median << std::endl;
+
+    // Calculate and display the mode(s)
+    std::vector<double> modes = calculateMode(numbers);
+    std::cout << "Mode(s): ";
+    for (const auto& mode : modes) {
+        std::cout << mode << " ";
+    }
+    std::cout << std::endl;
+
+    // Calculate and display some additional statistics using STL algorithms
+    
+    // Find the minimum element
+    auto minElement = std::min_element(numbers.begin(), numbers.end());
+    std::cout << "Minimum: " << *minElement << std::endl;
+
+    // Find the maximum element
+    auto maxElement = std::max_element(numbers.begin(), numbers.end());
+    std::cout << "Maximum: " << *maxElement << std::endl;
+
+    // Count how many numbers are above the mean
+    int aboveMeanCount = std::count_if(numbers.begin(), numbers.end(), 
+                                       [mean](double x) { return x > mean; });
+    std::cout << "Numbers above mean: " << aboveMeanCount << std::endl;
+
+    // Count how many numbers are below the mean
+    int belowMeanCount = std::count_if(numbers.begin(), numbers.end(), 
+                                       [mean](double x) { return x < mean; });
+    std::cout << "Numbers below mean: " << belowMeanCount << std::endl;
+
+    return 0;
+}
