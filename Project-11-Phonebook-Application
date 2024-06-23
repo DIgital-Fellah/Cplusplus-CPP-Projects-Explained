@@ -1,0 +1,128 @@
+#include <iostream>
+#include <map>
+#include <string>
+#include <limits>
+
+// Function prototypes
+void addContact(std::map<std::string, std::string>& phonebook);
+void searchContact(const std::map<std::string, std::string>& phonebook);
+void deleteContact(std::map<std::string, std::string>& phonebook);
+void displayAllContacts(const std::map<std::string, std::string>& phonebook);
+void clearInputBuffer();
+
+int main() {
+    // Create a map to store contacts (name as key, phone number as value)
+    std::map<std::string, std::string> phonebook;
+
+    int choice;
+    
+    // Main program loop
+    do {
+        // Display menu
+        std::cout << "\nPhonebook Application\n";
+        std::cout << "1. Add Contact\n";
+        std::cout << "2. Search Contact\n";
+        std::cout << "3. Delete Contact\n";
+        std::cout << "4. Display All Contacts\n";
+        std::cout << "5. Exit\n";
+        std::cout << "Enter your choice: ";
+        
+        // Get user's choice
+        std::cin >> choice;
+        clearInputBuffer();  // Clear any remaining characters in the input buffer
+
+        // Process user's choice
+        switch (choice) {
+            case 1:
+                addContact(phonebook);
+                break;
+            case 2:
+                searchContact(phonebook);
+                break;
+            case 3:
+                deleteContact(phonebook);
+                break;
+            case 4:
+                displayAllContacts(phonebook);
+                break;
+            case 5:
+                std::cout << "Exiting program. Goodbye!\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 5);  // Continue loop until user chooses to exit
+
+    return 0;
+}
+
+// Function to add a new contact to the phonebook
+void addContact(std::map<std::string, std::string>& phonebook) {
+    std::string name, number;
+
+    std::cout << "Enter contact name: ";
+    std::getline(std::cin, name);
+
+    std::cout << "Enter phone number: ";
+    std::getline(std::cin, number);
+
+    // Add the new contact to the map
+    phonebook[name] = number;
+
+    std::cout << "Contact added successfully!\n";
+}
+
+// Function to search for a contact in the phonebook
+void searchContact(const std::map<std::string, std::string>& phonebook) {
+    std::string name;
+
+    std::cout << "Enter contact name to search: ";
+    std::getline(std::cin, name);
+
+    // Search for the contact in the map
+    auto it = phonebook.find(name);
+
+    if (it != phonebook.end()) {
+        // Contact found
+        std::cout << "Contact found: " << it->first << " - " << it->second << "\n";
+    } else {
+        // Contact not found
+        std::cout << "Contact not found.\n";
+    }
+}
+
+// Function to delete a contact from the phonebook
+void deleteContact(std::map<std::string, std::string>& phonebook) {
+    std::string name;
+
+    std::cout << "Enter contact name to delete: ";
+    std::getline(std::cin, name);
+
+    // Attempt to erase the contact from the map
+    if (phonebook.erase(name) > 0) {
+        // Contact successfully deleted
+        std::cout << "Contact deleted successfully!\n";
+    } else {
+        // Contact not found
+        std::cout << "Contact not found.\n";
+    }
+}
+
+// Function to display all contacts in the phonebook
+void displayAllContacts(const std::map<std::string, std::string>& phonebook) {
+    if (phonebook.empty()) {
+        std::cout << "Phonebook is empty.\n";
+    } else {
+        std::cout << "All Contacts:\n";
+        // Iterate through all entries in the map
+        for (const auto& entry : phonebook) {
+            std::cout << entry.first << " - " << entry.second << "\n";
+        }
+    }
+}
+
+// Function to clear the input buffer
+void clearInputBuffer() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
