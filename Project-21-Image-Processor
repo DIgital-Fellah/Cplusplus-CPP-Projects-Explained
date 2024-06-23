@@ -1,0 +1,53 @@
+#include <iostream>
+#include <vector>
+#include <algorithm> // For std::transform
+#include <functional> // For std::plus
+
+// Function to adjust brightness
+int adjustBrightness(int pixel, int adjustment) {
+    // Ensure the pixel value stays within the valid range [0, 255]
+    int newPixel = pixel + adjustment;
+    if (newPixel > 255) newPixel = 255;
+    if (newPixel < 0) newPixel = 0;
+    return newPixel;
+}
+
+int main() {
+    // Define the image as a 2D vector (5x5 image for simplicity)
+    std::vector<std::vector<int>> image = {
+        { 50, 80, 90, 100, 120 },
+        { 60, 90, 100, 110, 130 },
+        { 70, 100, 110, 120, 140 },
+        { 80, 110, 120, 130, 150 },
+        { 90, 120, 130, 140, 160 }
+    };
+
+    // Define the brightness adjustment value
+    int brightnessAdjustment = 20;
+
+    // Print the original image
+    std::cout << "Original Image:" << std::endl;
+    for (const auto& row : image) {
+        for (const auto& pixel : row) {
+            std::cout << pixel << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    // Apply the brightness adjustment to each pixel in the image
+    for (auto& row : image) {
+        std::transform(row.begin(), row.end(), row.begin(),
+                       std::bind(adjustBrightness, std::placeholders::_1, brightnessAdjustment));
+    }
+
+    // Print the adjusted image
+    std::cout << "\nAdjusted Image:" << std::endl;
+    for (const auto& row : image) {
+        for (const auto& pixel : row) {
+            std::cout << pixel << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
