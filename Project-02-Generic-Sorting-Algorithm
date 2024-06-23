@@ -1,0 +1,84 @@
+#include <iostream>
+#include <string>
+
+// Template function for swapping two elements of any type
+template <typename T>
+void swap(T &a, T &b) {
+    T temp = a;
+    a = b;
+    b = temp;
+}
+
+// Template function for bubble sort
+// It can sort an array of any data type that supports comparison operators
+template <typename T>
+void bubbleSort(T arr[], int size) {
+    // Outer loop: iterate through all elements
+    for (int i = 0; i < size - 1; i++) {
+        // Flag to check if any swaps occurred in this pass
+        bool swapped = false;
+        
+        // Inner loop: compare adjacent elements
+        for (int j = 0; j < size - i - 1; j++) {
+            // If the current element is greater than the next element, swap them
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+                swapped = true;
+            }
+        }
+        
+        // If no swaps occurred in this pass, the array is already sorted
+        if (!swapped) {
+            break;
+        }
+    }
+}
+
+// Template function to print an array
+template <typename T>
+void printArray(T arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Test with integer array
+    int intArr[] = {64, 34, 25, 12, 22, 11, 90};
+    int intSize = sizeof(intArr) / sizeof(intArr[0]);
+    
+    std::cout << "Original integer array: ";
+    printArray(intArr, intSize);
+    
+    bubbleSort(intArr, intSize);
+    
+    std::cout << "Sorted integer array: ";
+    printArray(intArr, intSize);
+    
+    // Test with double array
+    double doubleArr[] = {3.14, 1.41, 2.72, 0.58, 1.73};
+    int doubleSize = sizeof(doubleArr) / sizeof(doubleArr[0]);
+    
+    std::cout << "\nOriginal double array: ";
+    printArray(doubleArr, doubleSize);
+    
+    bubbleSort(doubleArr, doubleSize);
+    
+    std::cout << "Sorted double array: ";
+    printArray(doubleArr, doubleSize);
+    
+    // Test with string array
+    std::string stringArr[] = {"banana", "apple", "cherry", "date", "elderberry"};
+    int stringSize = sizeof(stringArr) / sizeof(stringArr[0]);
+    
+    std::cout << "\nOriginal string array: ";
+    printArray(stringArr, stringSize);
+    
+    bubbleSort(stringArr, stringSize);
+    
+    std::cout << "Sorted string array: ";
+    printArray(stringArr, stringSize);
+    
+    return 0;
+}
