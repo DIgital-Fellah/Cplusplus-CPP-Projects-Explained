@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <iomanip>
+
+// Define a struct to represent a player
+struct Player {
+    std::string name;
+    int score;
+    
+    // Constructor to initialize a player
+    Player(const std::string& n, int s) : name(n), score(s) {}
+};
+
+// Function to print the leaderboard
+void printLeaderboard(const std::vector<Player>& leaderboard) {
+    std::cout << "\nCurrent Leaderboard:\n";
+    std::cout << std::setw(20) << "Name" << std::setw(10) << "Score" << "\n";
+    std::cout << std::string(30, '-') << "\n";
+    
+    // Iterate through the leaderboard and print each player's info
+    for (const auto& player : leaderboard) {
+        std::cout << std::setw(20) << player.name << std::setw(10) << player.score << "\n";
+    }
+}
+
+int main() {
+    // Create a vector to store the players
+    std::vector<Player> leaderboard;
+    
+    // Add some initial players
+    leaderboard.emplace_back("Alice", 100);
+    leaderboard.emplace_back("Bob", 85);
+    leaderboard.emplace_back("Charlie", 95);
+    leaderboard.emplace_back("David", 110);
+    leaderboard.emplace_back("Eve", 90);
+    
+    // Print the initial leaderboard
+    std::cout << "Initial Leaderboard:";
+    printLeaderboard(leaderboard);
+    
+    // Sort the leaderboard by score in descending order
+    std::sort(leaderboard.begin(), leaderboard.end(), 
+              [](const Player& a, const Player& b) {
+                  return a.score > b.score;
+              });
+    
+    // Print the sorted leaderboard
+    std::cout << "\nSorted Leaderboard (by score):";
+    printLeaderboard(leaderboard);
+    
+    // Add a new player
+    leaderboard.emplace_back("Frank", 105);
+    
+    // Use stable_sort to sort by score, maintaining the original order for equal scores
+    std::stable_sort(leaderboard.begin(), leaderboard.end(),
+                     [](const Player& a, const Player& b) {
+                         return a.score > b.score;
+                     });
+    
+    // Print the updated leaderboard
+    std::cout << "\nUpdated Leaderboard (after adding Frank):";
+    printLeaderboard(leaderboard);
+    
+    // Find a player's position (e.g., "Charlie")
+    std::string searchName = "Charlie";
+    auto it = std::find_if(leaderboard.begin(), leaderboard.end(),
+                           [&searchName](const Player& p) {
+                               return p.name == searchName;
+                           });
+    
+    if (it != leaderboard.end()) {
+        int position = std::distance(leaderboard.begin(), it) + 1;
+        std::cout << "\n" << searchName << " is at position " << position << " on the leaderboard.\n";
+    } else {
+        std::cout << "\n" << searchName << " not found on the leaderboard.\n";
+    }
+    
+    return 0;
+}
