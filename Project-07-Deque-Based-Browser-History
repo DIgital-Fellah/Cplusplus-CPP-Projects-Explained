@@ -1,0 +1,84 @@
+#include <iostream>
+#include <deque>
+#include <string>
+
+using namespace std;
+
+// Function to display the current URL
+void displayCurrentURL(const deque<string>& history, int currentIndex) {
+    if (currentIndex >= 0 && currentIndex < history.size()) {
+        cout << "Current URL: " << history[currentIndex] << endl;
+    } else {
+        cout << "No URL to display." << endl;
+    }
+}
+
+int main() {
+    // Deque to store the browser history
+    deque<string> history;
+    // Index to keep track of the current position in the history
+    int currentIndex = -1;
+
+    // Variable to store user input
+    string command;
+
+    // Display instructions to the user
+    cout << "Browser History Manager" << endl;
+    cout << "Commands: " << endl;
+    cout << "visit <url> - Visit a new URL" << endl;
+    cout << "back - Go back to the previous URL" << endl;
+    cout << "forward - Go forward to the next URL" << endl;
+    cout << "exit - Exit the program" << endl;
+
+    // Main loop to process user commands
+    while (true) {
+        cout << "> ";
+        cin >> command;
+
+        if (command == "visit") {
+            // Read the URL to visit
+            string url;
+            cin >> url;
+
+            // If we are not at the end of the history, remove all forward history
+            if (currentIndex < history.size() - 1) {
+                history.erase(history.begin() + currentIndex + 1, history.end());
+            }
+
+            // Add the new URL to the history
+            history.push_back(url);
+            // Update the current index to the new URL
+            currentIndex = history.size() - 1;
+
+            // Display the current URL
+            displayCurrentURL(history, currentIndex);
+        } else if (command == "back") {
+            // Check if we can go back
+            if (currentIndex > 0) {
+                currentIndex--;
+                // Display the current URL
+                displayCurrentURL(history, currentIndex);
+            } else {
+                cout << "No previous URL." << endl;
+            }
+        } else if (command == "forward") {
+            // Check if we can go forward
+            if (currentIndex < history.size() - 1) {
+                currentIndex++;
+                // Display the current URL
+                displayCurrentURL(history, currentIndex);
+            } else {
+                cout << "No next URL." << endl;
+            }
+        } else if (command == "exit") {
+            // Exit the program
+            break;
+        } else {
+            // Handle invalid commands
+            cout << "Invalid command. Please try again." << endl;
+        }
+    }
+
+    cout << "OVER" << endl;
+    return 0;
+}
