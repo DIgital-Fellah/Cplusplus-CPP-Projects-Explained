@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+// Define a structure to hold student information
+struct Student {
+    std::string name;
+    double grade;
+
+    // Constructor to easily create Student objects
+    Student(const std::string& n, double g) : name(n), grade(g) {}
+};
+
+// Function to print the list of students
+void printStudents(const std::vector<Student>& students) {
+    for (const auto& student : students) {
+        std::cout << "Name: " << student.name << ", Grade: " << student.grade << std::endl;
+    }
+}
+
+// Comparator function to sort students by grade in descending order
+bool compareByGrade(const Student& a, const Student& b) {
+    return a.grade > b.grade;
+}
+
+int main() {
+    // Create a vector to hold the list of students
+    std::vector<Student> students;
+
+    // Add some students to the list
+    students.emplace_back("Alice", 88.5);
+    students.emplace_back("Bob", 92.3);
+    students.emplace_back("Charlie", 85.0);
+    students.emplace_back("Diana", 92.3); // Note: Same grade as Bob to demonstrate stable sort
+    students.emplace_back("Eve", 78.9);
+
+    // Print the original list of students
+    std::cout << "Original list of students:" << std::endl;
+    printStudents(students);
+    std::cout << std::endl;
+
+    // Sort the students by grade using std::sort
+    std::sort(students.begin(), students.end(), compareByGrade);
+
+    // Print the sorted list of students
+    std::cout << "Students sorted by grade (using std::sort):" << std::endl;
+    printStudents(students);
+    std::cout << std::endl;
+
+    // Shuffle the students to demonstrate stable sort
+    std::random_shuffle(students.begin(), students.end());
+
+    // Print the shuffled list of students
+    std::cout << "Shuffled list of students:" << std::endl;
+    printStudents(students);
+    std::cout << std::endl;
+
+    // Sort the students by grade using std::stable_sort
+    std::stable_sort(students.begin(), students.end(), compareByGrade);
+
+    // Print the stably sorted list of students
+    std::cout << "Students sorted by grade (using std::stable_sort):" << std::endl;
+    printStudents(students);
+
+    return 0;
+}
