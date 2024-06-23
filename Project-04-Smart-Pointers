@@ -1,0 +1,106 @@
+#include <iostream>
+#include <memory>
+
+// Custom smart pointer class template
+template <typename T>
+class SmartPtr {
+private:
+    T* ptr;      // Raw pointer to the managed object
+    int* refCount;  // Pointer to the reference count
+
+public:
+    // Constructor
+    explicit SmartPtr(T* p = nullptr) : ptr(p), refCount(new int(1)) {
+        std::cout << "SmartPtr created. RefCount: " << *refCount << std::endl;
+    }
+
+    // Copy constructor
+    SmartPtr(const SmartPtr& other) : ptr(other.ptr), refCount(other.refCount) {
+        (*refCount)++;  // Increment the reference count
+        std::cout << "SmartPtr copied. RefCount: " << *refCount << std::endl;
+    }
+
+    // Destructor
+    ~SmartPtr() {
+        (*refCount)--;  // Decrement the reference count
+        std::cout << "SmartPtr destroyed. RefCount: " << *refCount << std::endl;
+
+        if (*refCount == 0) {
+            delete ptr;       // Delete the managed object
+            delete refCount;  // Delete the reference count
+            std::cout << "Object deleted." << std::endl;
+        }
+    }
+
+    // Overload the dereference operator (*)
+    T& operator*() const {
+        return *ptr;
+    }
+
+    // Overload the arrow operator (->)
+    T* operator->() const {
+        return ptr;
+    }
+
+    // Assignment operator
+    SmartPtr& operator=(const SmartPtr& other) {
+        if (this != &other) {
+            // Decrement the current reference count
+            (*refCount)--;
+            if (*refCount == 0) {
+                delete ptr;
+                delete refCount;
+            }
+
+            // Assign new values
+            ptr = other.ptr;
+            refCount = other.refCount;
+            (*refCount)++;  // Increment the new reference count
+        }
+        return *this;
+    }
+
+    // Get the current reference count (for debugging)
+    int getRefCount() const {
+        return *refCount;
+    }
+};
+
+// A simple class to test our smart pointer
+class TestClass {
+public:
+    TestClass() {
+        std::cout << "TestClass constructed." << std::endl;
+    }
+
+    ~TestClass() {
+        std::cout << "TestClass destroyed." << std::endl;
+    }
+
+    void sayHello() {
+        std::cout << "Hello from TestClass!" << std::endl;
+    }
+};
+
+int main() {
+    // Create a smart pointer to TestClass
+    SmartPtr<TestClass> ptr1(new TestClass());
+
+    // Use the smart pointer
+    ptr1->sayHello();
+
+    {
+        // Create another smart pointer and copy the first one
+        SmartPtr<TestClass> ptr2 = ptr1;
+        std::cout << "RefCount after copying: " << ptr1.getRefCount() << std::endl;
+
+        // Use the second smart pointer
+        ptr2->sayHello();
+    }  // ptr2 goes out of scope here
+
+    std::cout << "RefCount after ptr2 is destroyed: " << ptr1.getRefCount() << std::endl;
+
+    // ptr1 will be destroyed when main() ends
+
+    return 0;
+}
