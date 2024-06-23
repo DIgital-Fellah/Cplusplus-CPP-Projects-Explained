@@ -1,0 +1,106 @@
+#include <iostream>
+#include <string>
+#include <map>
+#include <vector>
+#include <algorithm>
+#include <iomanip>
+
+// Define a struct to represent a student's grade
+struct Grade {
+    std::string subject;
+    double score;
+};
+
+// Define a custom comparator for sorting grades
+struct GradeComparator {
+    bool operator()(const Grade& a, const Grade& b) const {
+        return a.score > b.score; // Sort in descending order
+    }
+};
+
+// Main function
+int main() {
+    // Create a multimap to store student names and their grades
+    // The key is the student's name (string), and the value is a Grade struct
+    std::multimap<std::string, Grade> studentGrades;
+
+    // Function to add a grade for a student
+    auto addGrade = [&studentGrades]() {
+        std::string name, subject;
+        double score;
+
+        // Get student information from user
+        std::cout << "Enter student name: ";
+        std::getline(std::cin, name);
+        std::cout << "Enter subject: ";
+        std::getline(std::cin, subject);
+        std::cout << "Enter score: ";
+        std::cin >> score;
+        std::cin.ignore(); // Clear the newline from the input buffer
+
+        // Add the grade to the multimap
+        studentGrades.insert({name, {subject, score}});
+        std::cout << "Grade added successfully.\n";
+    };
+
+    // Function to display grades for a specific student
+    auto displayGrades = [&studentGrades]() {
+        std::string name;
+        std::cout << "Enter student name: ";
+        std::getline(std::cin, name);
+
+        // Find the range of grades for the given student
+        auto range = studentGrades.equal_range(name);
+
+        if (range.first == range.second) {
+            std::cout << "No grades found for " << name << ".\n";
+            return;
+        }
+
+        // Collect all grades for the student
+        std::vector<Grade> grades;
+        for (auto it = range.first; it != range.second; ++it) {
+            grades.push_back(it->second);
+        }
+
+        // Sort the grades using the custom comparator
+        std::sort(grades.begin(), grades.end(), GradeComparator());
+
+        // Display the sorted grades
+        std::cout << "Grades for " << name << ":\n";
+        for (const auto& grade : grades) {
+            std::cout << std::setw(15) << std::left << grade.subject 
+                      << std::setw(5) << std::right << grade.score << "\n";
+        }
+    };
+
+    // Main program loop
+    char choice;
+    do {
+        // Display menu
+        std::cout << "\nStudent Grades Tracker\n";
+        std::cout << "1. Add Grade\n";
+        std::cout << "2. Display Grades\n";
+        std::cout << "3. Exit\n";
+        std::cout << "Enter your choice (1-3): ";
+        std::cin >> choice;
+        std::cin.ignore(); // Clear the newline from the input buffer
+
+        // Process user choice
+        switch (choice) {
+            case '1':
+                addGrade();
+                break;
+            case '2':
+                displayGrades();
+                break;
+            case '3':
+                std::cout << "Exiting program.\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != '3');
+
+    return 0;
+}
