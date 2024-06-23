@@ -1,0 +1,118 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <cctype>
+#include <map>
+
+// Function to convert a string to lowercase
+std::string to_lowercase(const std::string& str) {
+    std::string lower_str = str;
+    std::transform(lower_str.begin(), lower_str.end(), lower_str.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    return lower_str;
+}
+
+// Function to remove punctuation from a string
+std::string remove_punctuation(const std::string& str) {
+    std::string no_punct = str;
+    no_punct.erase(std::remove_if(no_punct.begin(), no_punct.end(), 
+                                  [](char c) { return std::ispunct(c); }),
+                   no_punct.end());
+    return no_punct;
+}
+
+int main() {
+    // Open the input file
+    std::ifstream file("input.txt");
+    if (!file.is_open()) {
+        std::cerr << "Error opening file!" << std::endl;
+        return 1;
+    }
+
+    // Read the entire file into a string
+    std::string content((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
+
+    // Close the file
+    file.close();
+
+    // Convert the content to lowercase
+    content = to_lowercase(content);
+
+    // Split the content into words
+    std::vector<std::string> words;
+    size_t pos = 0;
+    std::string word;
+    while ((pos = content.find_first_of(" \n\t", pos)) != std::string::npos) {
+        word = content.substr(0, pos);
+        if (!word.empty()) {
+            word = remove_punctuation(word);
+            if (!word.empty()) {
+                words.push_back(word);
+            }
+        }
+        content.erase(0, pos + 1);
+    }
+    if (!content.empty()) {
+        word = remove_punctuation(content);
+        if (!word.empty()) {
+            words.push_back(word);
+        }
+    }
+
+    // Count the total number of words
+    std::cout << "Total words: " << words.size() << std::endl;
+
+    // Find the most common word
+    std::map<std::string, int> word_count;
+    std::for_each(words.begin(), words.end(), [&word_count](const std::string& w) {
+        word_count[w]++;
+    });
+
+    auto most_common = std::max_element(word_count.begin(), word_count.end(),
+        [](const auto& p1, const auto& p2) {
+            return p1.second < p2.second;
+        }
+    );
+
+    std::cout << "Most common word: '" << most_common->first 
+              << "' (occurs " << most_common->second << " times)" << std::endl;
+
+    // Find the longest word
+    auto longest_word = std::max_element(words.begin(), words.end(),
+        [](const std::string& w1, const std::string& w2) {
+            return w1.length() < w2.length();
+        }
+    );
+
+    std::cout << "Longest word: '" << *longest_word << "' (" 
+              << longest_word->length() << " characters)" << std::endl;
+
+    // Count words with more than 5 characters
+    int long_words = std::count_if(words.begin(), words.end(),
+        [](const std::string& w) { return w.length() > 5; }
+    );
+
+    std::cout << "Words with more than 5 characters: " << long_words << std::endl;
+
+    // Find a specific word
+    std::string search_word = "example";
+    auto found = std::find(words.begin(), words.end(), search_word);
+    if (found != words.end()) {
+        std::cout << "The word '" << search_word << "' was found in the text." << std::endl;
+    } else {
+        std::cout << "The word '" << search_word << "' was not found in the text." << std::endl;
+    }
+
+    // Find adjacent repeated words
+    auto adjacent_repeat = std::adjacent_find(words.begin(), words.end());
+    if (adjacent_repeat != words.end()) {
+        std::cout << "First adjacent repeated word: '" << *adjacent_repeat << "'" << std::endl;
+    } else {
+        std::cout << "No adjacent repeated words found." << std::endl;
+    }
+
+    return 0;
+}
