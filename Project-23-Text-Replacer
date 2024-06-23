@@ -1,0 +1,62 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+
+// Function to replace all occurrences of a word in a string
+std::string replaceWord(const std::string& text, const std::string& oldWord, const std::string& newWord) {
+    std::string modifiedText = text;
+    size_t pos = 0;
+    // Loop to find all occurrences of the old word
+    while ((pos = modifiedText.find(oldWord, pos)) != std::string::npos) {
+        // Replace the old word with the new word
+        modifiedText.replace(pos, oldWord.length(), newWord);
+        // Move to the next position
+        pos += newWord.length();
+    }
+    return modifiedText;
+}
+
+int main() {
+    // File names
+    std::string inputFileName = "input.txt";
+    std::string outputFileName = "output.txt";
+    std::string oldWord, newWord;
+
+    // Ask the user for the word to be replaced and the new word
+    std::cout << "Enter the word to be replaced: ";
+    std::cin >> oldWord;
+    std::cout << "Enter the new word: ";
+    std::cin >> newWord;
+
+    // Open the input file for reading
+    std::ifstream inputFile(inputFileName);
+    if (!inputFile) {
+        std::cerr << "Error opening input file!" << std::endl;
+        return 1;
+    }
+
+    // Open the output file for writing
+    std::ofstream outputFile(outputFileName);
+    if (!outputFile) {
+        std::cerr << "Error opening output file!" << std::endl;
+        return 1;
+    }
+
+    // Read the input file line by line
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        // Replace the old word with the new word in the current line
+        std::string modifiedLine = replaceWord(line, oldWord, newWord);
+        // Write the modified line to the output file
+        outputFile << modifiedLine << std::endl;
+    }
+
+    // Close the files
+    inputFile.close();
+    outputFile.close();
+
+    std::cout << "Word replacement completed. Check the output file: " << outputFileName << std::endl;
+
+    return 0;
+}
