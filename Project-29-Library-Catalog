@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <iomanip>
+
+// Define a Book class to represent each book in the library
+class Book {
+public:
+    // Constructor to initialize a book with its details
+    Book(std::string t, std::string a, int y) : title(t), author(a), year(y) {}
+
+    // Getter methods to access book details
+    std::string getTitle() const { return title; }
+    std::string getAuthor() const { return author; }
+    int getYear() const { return year; }
+
+private:
+    std::string title;
+    std::string author;
+    int year;
+};
+
+// Function to print the library catalog
+void printCatalog(const std::vector<Book>& catalog) {
+    std::cout << std::left << std::setw(30) << "Title" 
+              << std::setw(20) << "Author" 
+              << "Year" << std::endl;
+    std::cout << std::string(55, '-') << std::endl;
+
+    for (const auto& book : catalog) {
+        std::cout << std::left << std::setw(30) << book.getTitle() 
+                  << std::setw(20) << book.getAuthor() 
+                  << book.getYear() << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Create a vector to store our books
+    std::vector<Book> library;
+
+    // Add some books to our library
+    library.emplace_back("To Kill a Mockingbird", "Harper Lee", 1960);
+    library.emplace_back("1984", "George Orwell", 1949);
+    library.emplace_back("Pride and Prejudice", "Jane Austen", 1813);
+    library.emplace_back("The Great Gatsby", "F. Scott Fitzgerald", 1925);
+    library.emplace_back("Moby Dick", "Herman Melville", 1851);
+
+    // Print the original catalog
+    std::cout << "Original Catalog:" << std::endl;
+    printCatalog(library);
+
+    // Sort by title
+    std::sort(library.begin(), library.end(), 
+              [](const Book& a, const Book& b) { return a.getTitle() < b.getTitle(); });
+    std::cout << "Sorted by Title:" << std::endl;
+    printCatalog(library);
+
+    // Sort by author
+    std::sort(library.begin(), library.end(), 
+              [](const Book& a, const Book& b) { return a.getAuthor() < b.getAuthor(); });
+    std::cout << "Sorted by Author:" << std::endl;
+    printCatalog(library);
+
+    // Sort by publication year
+    std::sort(library.begin(), library.end(), 
+              [](const Book& a, const Book& b) { return a.getYear() < b.getYear(); });
+    std::cout << "Sorted by Publication Year:" << std::endl;
+    printCatalog(library);
+
+    return 0;
+}
