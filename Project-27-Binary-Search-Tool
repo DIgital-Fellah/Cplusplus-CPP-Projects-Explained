@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+// Function to print a vector of integers
+void printVector(const std::vector<int>& vec) {
+    for (const auto& element : vec) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Create a vector to store our sorted data
+    std::vector<int> data = {1, 3, 4, 6, 8, 9, 11, 13, 16, 17, 19, 23};
+
+    // Print the initial sorted vector
+    std::cout << "Sorted data: ";
+    printVector(data);
+
+    while (true) {
+        // Ask the user for a number to search
+        std::cout << "\nEnter a number to search (or 'q' to quit): ";
+        std::string input;
+        std::cin >> input;
+
+        // Check if the user wants to quit
+        if (input == "q" || input == "Q") {
+            break;
+        }
+
+        // Convert the input string to an integer
+        int target = std::stoi(input);
+
+        // Use lower_bound to find the first element that is not less than target
+        auto lower = std::lower_bound(data.begin(), data.end(), target);
+
+        // Use upper_bound to find the first element that is greater than target
+        auto upper = std::upper_bound(data.begin(), data.end(), target);
+
+        // Use binary_search to check if the target exists in the vector
+        bool exists = std::binary_search(data.begin(), data.end(), target);
+
+        // Print the results
+        std::cout << "Results for " << target << ":\n";
+
+        // Check if the target exists in the vector
+        if (exists) {
+            std::cout << "- Found in the vector\n";
+        } else {
+            std::cout << "- Not found in the vector\n";
+        }
+
+        // Print the lower bound result
+        if (lower != data.end()) {
+            std::cout << "- Lower bound: " << *lower << " at index " << (lower - data.begin()) << "\n";
+        } else {
+            std::cout << "- Lower bound: No element found (all elements are smaller)\n";
+        }
+
+        // Print the upper bound result
+        if (upper != data.end()) {
+            std::cout << "- Upper bound: " << *upper << " at index " << (upper - data.begin()) << "\n";
+        } else {
+            std::cout << "- Upper bound: No element found (all elements are smaller or equal)\n";
+        }
+
+        // Calculate and print the range of equal elements
+        std::cout << "- Range of equal elements: ";
+        if (lower != upper) {
+            std::cout << "From index " << (lower - data.begin()) << " to " << (upper - data.begin() - 1) << "\n";
+        } else {
+            std::cout << "No equal elements found\n";
+        }
+    }
+
+    std::cout << "Thank you for using the Binary Search Tool!" << std::endl;
+
+    return 0;
+}
