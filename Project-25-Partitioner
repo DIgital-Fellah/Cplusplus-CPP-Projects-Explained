@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#include <algorithm> // For std::partition and std::stable_partition
+
+// Function to check if a number is even
+bool isEven(int num) {
+    return num % 2 == 0;
+}
+
+int main() {
+    // Step 1: Create a vector of integers
+    std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // Step 2: Display the original list of numbers
+    std::cout << "Original list of numbers: ";
+    for (int num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Step 3: Use std::partition to partition the numbers into even and odd
+    // std::partition rearranges the elements in such a way that all elements
+    // for which the predicate (isEven) returns true precede the elements for
+    // which the predicate returns false.
+    std::partition(numbers.begin(), numbers.end(), isEven);
+
+    // Step 4: Display the partitioned list of numbers
+    std::cout << "Partitioned list of numbers (even first, then odd): ";
+    for (int num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Step 5: Use std::stable_partition to partition the numbers into even and odd
+    // std::stable_partition does the same as std::partition but maintains the relative
+    // order of the elements within each group.
+    std::stable_partition(numbers.begin(), numbers.end(), isEven);
+
+    // Step 6: Display the stably partitioned list of numbers
+    std::cout << "Stably partitioned list of numbers (even first, then odd): ";
+    for (int num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Step 7: Separate the even and odd numbers into two different vectors
+    std::vector<int> evenNumbers;
+    std::vector<int> oddNumbers;
+
+    // Use std::partition_copy to copy the elements into two separate containers
+    std::partition_copy(numbers.begin(), numbers.end(),
+                        std::back_inserter(evenNumbers),
+                        std::back_inserter(oddNumbers),
+                        isEven);
+
+    // Step 8: Display the even numbers
+    std::cout << "Even numbers: ";
+    for (int num : evenNumbers) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Step 9: Display the odd numbers
+    std::cout << "Odd numbers: ";
+    for (int num : oddNumbers) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
