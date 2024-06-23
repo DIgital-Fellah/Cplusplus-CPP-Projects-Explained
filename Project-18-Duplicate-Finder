@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+// Function to print elements of a vector
+template<typename T>
+void printVector(const std::vector<T>& vec) {
+    for (const auto& element : vec) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Create a vector of integers to store our data
+    std::vector<int> numbers = {1, 2, 2, 3, 4, 4, 4, 5, 5, 6, 7, 7, 8, 9, 9};
+
+    std::cout << "Original vector: ";
+    printVector(numbers);
+
+    // Create a vector to store the positions of duplicate elements
+    std::vector<int> duplicatePositions;
+
+    // Use adjacent_find to find duplicates
+    // adjacent_find returns an iterator to the first of two consecutive equal elements
+    auto it = numbers.begin(); // Iterator to traverse the vector
+    while (true) {
+        // Find the next pair of adjacent duplicate elements
+        it = std::adjacent_find(it, numbers.end());
+
+        // If no more duplicates are found, break the loop
+        if (it == numbers.end()) {
+            break;
+        }
+
+        // Calculate the position of the found duplicate
+        int position = std::distance(numbers.begin(), it);
+
+        // Add the position to our duplicatePositions vector
+        duplicatePositions.push_back(position);
+
+        // Move the iterator to the next element to continue searching
+        ++it;
+    }
+
+    // Print the results
+    if (!duplicatePositions.empty()) {
+        std::cout << "Duplicate elements found at positions: ";
+        printVector(duplicatePositions);
+
+        std::cout << "Duplicate values: ";
+        for (int pos : duplicatePositions) {
+            std::cout << numbers[pos] << " ";
+        }
+        std::cout << std::endl;
+    } else {
+        std::cout << "No duplicates found." << std::endl;
+    }
+
+    return 0;
+}
