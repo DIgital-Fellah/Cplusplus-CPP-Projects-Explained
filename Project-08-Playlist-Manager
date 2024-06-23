@@ -1,0 +1,127 @@
+#include <iostream>
+#include <list>
+#include <string>
+#include <algorithm>
+#include <random>
+#include <chrono>
+
+// Define a struct to represent a song
+struct Song {
+    std::string title;
+    std::string artist;
+
+    // Constructor to easily create a Song object
+    Song(const std::string& t, const std::string& a) : title(t), artist(a) {}
+};
+
+// Function to display the current playlist
+void displayPlaylist(const std::list<Song>& playlist) {
+    if (playlist.empty()) {
+        std::cout << "The playlist is empty.\n";
+    } else {
+        std::cout << "Current Playlist:\n";
+        int index = 1;
+        for (const auto& song : playlist) {
+            std::cout << index++ << ". " << song.title << " by " << song.artist << "\n";
+        }
+    }
+    std::cout << "\n";
+}
+
+// Function to add a song to the playlist
+void addSong(std::list<Song>& playlist) {
+    std::string title, artist;
+    std::cout << "Enter song title: ";
+    std::getline(std::cin, title);
+    std::cout << "Enter artist name: ";
+    std::getline(std::cin, artist);
+
+    // Create a new Song object and add it to the end of the playlist
+    playlist.push_back(Song(title, artist));
+    std::cout << "Song added successfully!\n\n";
+}
+
+// Function to remove a song from the playlist
+void removeSong(std::list<Song>& playlist) {
+    if (playlist.empty()) {
+        std::cout << "The playlist is empty. Nothing to remove.\n\n";
+        return;
+    }
+
+    int index;
+    std::cout << "Enter the number of the song to remove: ";
+    std::cin >> index;
+    std::cin.ignore(); // Clear the newline character from the input buffer
+
+    // Check if the index is valid
+    if (index < 1 || index > playlist.size()) {
+        std::cout << "Invalid song number.\n\n";
+        return;
+    }
+
+    // Find the song at the specified index and remove it
+    auto it = playlist.begin();
+    std::advance(it, index - 1);
+    playlist.erase(it);
+    std::cout << "Song removed successfully!\n\n";
+}
+
+// Function to shuffle the playlist
+void shufflePlaylist(std::list<Song>& playlist) {
+    if (playlist.size() < 2) {
+        std::cout << "Not enough songs to shuffle.\n\n";
+        return;
+    }
+
+    // Convert the list to a vector for easier shuffling
+    std::vector<Song> temp(playlist.begin(), playlist.end());
+
+    // Use a random number generator with the current time as seed
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(temp.begin(), temp.end(), std::default_random_engine(seed));
+
+    // Copy the shuffled vector back to the list
+    playlist.assign(temp.begin(), temp.end());
+    std::cout << "Playlist shuffled successfully!\n\n";
+}
+
+int main() {
+    std::list<Song> playlist;
+    int choice;
+
+    while (true) {
+        // Display menu options
+        std::cout << "Playlist Manager\n";
+        std::cout << "1. Display Playlist\n";
+        std::cout << "2. Add Song\n";
+        std::cout << "3. Remove Song\n";
+        std::cout << "4. Shuffle Playlist\n";
+        std::cout << "5. Exit\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+        std::cin.ignore(); // Clear the newline character from the input buffer
+
+        // Process user's choice
+        switch (choice) {
+            case 1:
+                displayPlaylist(playlist);
+                break;
+            case 2:
+                addSong(playlist);
+                break;
+            case 3:
+                removeSong(playlist);
+                break;
+            case 4:
+                shufflePlaylist(playlist);
+                break;
+            case 5:
+                std::cout << "Thank you for using Playlist Manager. Goodbye!\n";
+                return 0;
+            default:
+                std::cout << "Invalid choice. Please try again.\n\n";
+        }
+    }
+
+    return 0;
+}
