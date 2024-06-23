@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+// Function to find repeated patterns in a container
+template<typename Container>
+void findRepeatedPatterns(const Container& data, int patternLength, int minRepetitions) {
+    // Iterate through the container
+    for (auto it = data.begin(); it != data.end(); ++it) {
+        // Use search_n to find repeated patterns
+        auto found = std::search_n(it, data.end(), patternLength, *it);
+        
+        // If a pattern is found
+        if (found != data.end()) {
+            // Count the number of repetitions
+            int repetitions = 1;
+            auto patternEnd = found + patternLength;
+            
+            while (patternEnd != data.end() && 
+                   std::equal(found, patternEnd, patternEnd)) {
+                ++repetitions;
+                patternEnd += patternLength;
+            }
+            
+            // If the pattern repeats at least minRepetitions times
+            if (repetitions >= minRepetitions) {
+                // Print the pattern and its number of repetitions
+                std::cout << "Pattern: ";
+                std::copy(found, found + patternLength, 
+                          std::ostream_iterator<typename Container::value_type>(std::cout));
+                std::cout << " repeats " << repetitions << " times\n";
+                
+                // Move the iterator to avoid reporting the same pattern multiple times
+                it = found + patternLength * repetitions - 1;
+            }
+        }
+    }
+}
+
+int main() {
+    // Example 1: Finding repeated patterns in a string
+    std::string text = "abcabcabcdefdefghighighighi";
+    std::cout << "Finding patterns in string: " << text << "\n";
+    findRepeatedPatterns(text, 3, 2);  // Look for patterns of length 3, repeated at least 2 times
+    
+    std::cout << "\n";
+    
+    // Example 2: Finding repeated patterns in a vector of integers
+    std::vector<int> numbers = {1, 2, 3, 1, 2, 3, 1, 2, 3, 4, 5, 4, 5, 4, 5};
+    std::cout << "Finding patterns in vector: ";
+    for (int num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << "\n";
+    findRepeatedPatterns(numbers, 2, 2);  // Look for patterns of length 2, repeated at least 2 times
+    
+    return 0;
+}
