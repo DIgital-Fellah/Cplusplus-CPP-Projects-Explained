@@ -1,0 +1,76 @@
+#include <iostream>
+#include <string>
+#include <set>
+#include <algorithm>
+#include <cctype>
+#include <sstream>
+
+// Function to convert a string to lowercase
+std::string to_lowercase(const std::string& str) {
+    std::string result = str;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    return result;
+}
+
+// Function to remove punctuation from a string
+std::string remove_punctuation(const std::string& str) {
+    std::string result;
+    std::copy_if(str.begin(), str.end(), std::back_inserter(result),
+                 [](char c){ return std::isalnum(c) || std::isspace(c); });
+    return result;
+}
+
+int main() {
+    // Create a multiset to store words
+    // A multiset allows duplicate elements and keeps them sorted
+    std::multiset<std::string> word_count;
+
+    std::string input_text;
+    std::cout << "Enter a text (press Ctrl+D on Unix or Ctrl+Z on Windows to finish):\n";
+
+    // Read the entire input text
+    std::string line;
+    while (std::getline(std::cin, line)) {
+        input_text += line + " ";
+    }
+
+    // Convert the text to lowercase and remove punctuation
+    input_text = to_lowercase(remove_punctuation(input_text));
+
+    // Use a stringstream to split the text into words
+    std::istringstream iss(input_text);
+    std::string word;
+
+    // Insert each word into the multiset
+    while (iss >> word) {
+        word_count.insert(word);
+    }
+
+    // Print the frequency of each word
+    std::cout << "\nWord frequencies:\n";
+    std::string current_word;
+    int frequency = 0;
+
+    for (const auto& w : word_count) {
+        if (w != current_word) {
+            // If we've moved to a new word, print the previous word's frequency
+            if (!current_word.empty()) {
+                std::cout << current_word << ": " << frequency << std::endl;
+            }
+            // Start counting the new word
+            current_word = w;
+            frequency = 1;
+        } else {
+            // If it's the same word, increment the frequency
+            ++frequency;
+        }
+    }
+
+    // Print the last word's frequency
+    if (!current_word.empty()) {
+        std::cout << current_word << ": " << frequency << std::endl;
+    }
+
+    return 0;
+}
