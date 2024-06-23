@@ -1,0 +1,119 @@
+#include <iostream>
+#include <vector>
+
+// Template class for Matrix
+template <typename T>
+class Matrix {
+private:
+    std::vector<std::vector<T>> data; // 2D vector to store matrix elements
+    int rows; // Number of rows in the matrix
+    int cols; // Number of columns in the matrix
+
+public:
+    // Constructor to initialize matrix with given rows and columns
+    Matrix(int r, int c) : rows(r), cols(c) {
+        data.resize(rows, std::vector<T>(cols));
+    }
+
+    // Function to set the value at a specific position in the matrix
+    void setValue(int r, int c, T value) {
+        data[r][c] = value;
+    }
+
+    // Function to get the value at a specific position in the matrix
+    T getValue(int r, int c) const {
+        return data[r][c];
+    }
+
+    // Function to print the matrix
+    void print() const {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                std::cout << data[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    // Function to add two matrices
+    Matrix<T> operator+(const Matrix<T>& other) const {
+        // Check if the dimensions match
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument("Matrices dimensions do not match for addition");
+        }
+
+        // Create a new matrix to store the result
+        Matrix<T> result(rows, cols);
+
+        // Perform element-wise addition
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result.setValue(i, j, data[i][j] + other.getValue(i, j));
+            }
+        }
+
+        return result;
+    }
+
+    // Function to multiply two matrices
+    Matrix<T> operator*(const Matrix<T>& other) const {
+        // Check if the dimensions match for multiplication
+        if (cols != other.rows) {
+            throw std::invalid_argument("Matrices dimensions do not match for multiplication");
+        }
+
+        // Create a new matrix to store the result
+        Matrix<T> result(rows, other.cols);
+
+        // Perform matrix multiplication
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < other.cols; ++j) {
+                T sum = 0;
+                for (int k = 0; k < cols; ++k) {
+                    sum += data[i][k] * other.getValue(k, j);
+                }
+                result.setValue(i, j, sum);
+            }
+        }
+
+        return result;
+    }
+};
+
+int main() {
+    // Create two 2x2 matrices of type int
+    Matrix<int> mat1(2, 2);
+    Matrix<int> mat2(2, 2);
+
+    // Set values for the first matrix
+    mat1.setValue(0, 0, 1);
+    mat1.setValue(0, 1, 2);
+    mat1.setValue(1, 0, 3);
+    mat1.setValue(1, 1, 4);
+
+    // Set values for the second matrix
+    mat2.setValue(0, 0, 5);
+    mat2.setValue(0, 1, 6);
+    mat2.setValue(1, 0, 7);
+    mat2.setValue(1, 1, 8);
+
+    // Print the first matrix
+    std::cout << "Matrix 1:" << std::endl;
+    mat1.print();
+
+    // Print the second matrix
+    std::cout << "Matrix 2:" << std::endl;
+    mat2.print();
+
+    // Add the two matrices
+    Matrix<int> sum = mat1 + mat2;
+    std::cout << "Sum of Matrix 1 and Matrix 2:" << std::endl;
+    sum.print();
+
+    // Multiply the two matrices
+    Matrix<int> product = mat1 * mat2;
+    std::cout << "Product of Matrix 1 and Matrix 2:" << std::endl;
+    product.print();
+
+    return 0;
+}
