@@ -1,0 +1,47 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+
+// Function to check if a given subsequence matches the target sequence
+bool matchSequence(const std::string& dna, const std::string& target, size_t pos) {
+    // Check if the substring starting at pos matches the target sequence
+    return std::equal(target.begin(), target.end(), dna.begin() + pos);
+}
+
+int main() {
+    // The main DNA strand
+    std::string dna = "ACGTACGTGACCTGACGTACGTGACCTGACGTACGTGACCTG";
+    // The target DNA sequence we want to find
+    std::string target = "GACCTG";
+
+    // Vector to store the positions where the target sequence is found
+    std::vector<size_t> positions;
+
+    // Use std::search to find the first occurrence of the target sequence
+    auto it = std::search(dna.begin(), dna.end(), target.begin(), target.end());
+
+    // Loop to find all occurrences of the target sequence
+    while (it != dna.end()) {
+        // Calculate the position of the found sequence
+        size_t pos = std::distance(dna.begin(), it);
+        // Store the position in the vector
+        positions.push_back(pos);
+        // Move the iterator to the next position to continue searching
+        it = std::search(it + 1, dna.end(), target.begin(), target.end());
+    }
+
+    // Output the results
+    std::cout << "Target sequence found at positions: ";
+    for (size_t pos : positions) {
+        std::cout << pos << " ";
+    }
+    std::cout << std::endl;
+
+    // If no positions were found, inform the user
+    if (positions.empty()) {
+        std::cout << "Target sequence not found in the DNA strand." << std::endl;
+    }
+
+    return 0;
+}
